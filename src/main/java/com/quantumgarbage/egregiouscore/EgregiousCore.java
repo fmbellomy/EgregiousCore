@@ -1,7 +1,8 @@
 package com.quantumgarbage.egregiouscore;
 
-import aztech.modern_industrialization.MIComponents;
+import aztech.modern_industrialization.api.energy.EnergyApi;
 import com.mojang.logging.LogUtils;
+import dev.technici4n.grandpower.api.ISimpleEnergyItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +17,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -24,7 +26,6 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.swedz.tesseract.neoforge.registry.common.MICommonCapabitilies;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
@@ -39,12 +40,8 @@ public class EgregiousCore {
   // Create a Deferred Register to hold Items which will all be registered under the
   // "egregiouscore" namespace
   public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(ID);
-  public static final DeferredItem<Item> PROSPECTOR_ITEM =
-      ITEMS.register(
-          "prospector",
-          () ->
-              new ProspectorItem(
-                  new Item.Properties().component(MIComponents.ENERGY.get(), 1_000_000_000L)));
+  public static final DeferredItem<ProspectorItem> PROSPECTOR_ITEM =
+      ITEMS.register("prospector", () -> new ProspectorItem(new Item.Properties(), 0L));
   // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the
   // "egregiouscore" namespace
   public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
@@ -82,6 +79,7 @@ public class EgregiousCore {
     CREATIVE_MODE_TABS.register(modEventBus);
 
     modEventBus.addListener(this::registerCapabilities);
+    modEventBus.addListener(this::onConfigLoaded);
     // Register ourselves for server and other game events we are interested in.
     // Note that this is necessary if and only if we want *this* class (Egregious_core) to respond
     // directly to events.
@@ -97,8 +95,22 @@ public class EgregiousCore {
     return ResourceLocation.fromNamespaceAndPath(ID, name);
   }
 
+  public void onConfigLoaded(ModConfigEvent.Loading event) {
+    PROSPECTOR_ITEM.get().setEnergyCapacity(Config.PROSPECTOR_ENERGY_CAPACITY.get());
+  }
+
   private void registerCapabilities(RegisterCapabilitiesEvent event) {
-    MICommonCapabitilies.simpleEnergyItem((ProspectorItem) PROSPECTOR_ITEM.get(), event);
+    ProspectorItem item = PROSPECTOR_ITEM.get();
+    event.registerItem(
+        EnergyApi.ITEM,
+        (stack, ctx) ->
+            ISimpleEnergyItem.createStorage(
+                stack,
+                item.getEnergyComponent(),
+                item.getEnergyCapacity(stack),
+                item.getEnergyMaxInput(stack),
+                item.getEnergyMaxOutput(stack)),
+        item);
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {}
