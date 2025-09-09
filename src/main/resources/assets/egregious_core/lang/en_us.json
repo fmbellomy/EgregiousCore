@@ -1,5 +1,4 @@
 {
-  "itemGroup.egregious_core": "Example Mod Tab",
-  "block.egregious_core.example_block": "Example Block",
-  "item.egregious_core.example_item": "Example Item"
+  "itemGroup.egregious_core": "Egregious Core",
+  "item.egregious_core.prospector_item": "Ore Prospector"
 }
