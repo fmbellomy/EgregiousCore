@@ -2,6 +2,7 @@ package com.quantumgarbage.egregiouscore;
 
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import com.mojang.logging.LogUtils;
+import com.quantumgarbage.egregiouscore.multis.Multiblocks;
 import dev.technici4n.grandpower.api.ISimpleEnergyItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -89,6 +90,9 @@ public class EgregiousCore {
 
     // Register our mod's ModConfigSpec so that FML can create and load the config file for us
     modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
+    // welp lets see what happens i guess...
+    Multiblocks.init();
   }
 
   public static ResourceLocation id(String name) {
