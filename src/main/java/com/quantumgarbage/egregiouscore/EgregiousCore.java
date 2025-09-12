@@ -26,6 +26,7 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 import net.swedz.tesseract.neoforge.capabilities.CapabilitiesListeners;
 import net.swedz.tesseract.neoforge.registry.holder.BlockHolder;
 import net.swedz.tesseract.neoforge.registry.holder.ItemHolder;
@@ -107,6 +108,7 @@ public class EgregiousCore {
                   EgregiousItems.values().forEach(ItemHolder::triggerRegistrationListener);
                   EgregiousBlocks.values().forEach(BlockHolder::triggerRegistrationListener);
                 }));
+    modEventBus.addListener(RegisterDataMapTypesEvent.class, EgregiousDatamaps::init);
   }
 
   public static ResourceLocation id(String name) {
