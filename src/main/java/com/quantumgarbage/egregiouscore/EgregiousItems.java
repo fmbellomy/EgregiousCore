@@ -1,6 +1,7 @@
 package com.quantumgarbage.egregiouscore;
 
 import com.google.common.collect.Sets;
+import com.quantumgarbage.egregiouscore.item.Prospector;
 import java.util.Set;
 import java.util.function.Function;
 import net.minecraft.world.item.Item;
@@ -12,11 +13,11 @@ import net.swedz.tesseract.neoforge.registry.common.MICommonCapabitilies;
 import net.swedz.tesseract.neoforge.registry.holder.ItemHolder;
 
 public class EgregiousItems {
-  public static final ItemHolder<ProspectorItem> PROSPECTOR =
+  public static final ItemHolder<Prospector> PROSPECTOR =
       create(
               "prospector",
               "Ore Prospector",
-              (p) -> new ProspectorItem(p, 1_000_000L),
+              (p) -> new Prospector(p, 1_000_000L),
               SortOrder.UNSORTED)
           .withCapabilities(MICommonCapabitilies::simpleEnergyItem)
           .withModelBuilder(CommonModelBuilders::handheld)

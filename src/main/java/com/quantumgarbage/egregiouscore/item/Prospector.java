@@ -1,6 +1,7 @@
-package com.quantumgarbage.egregiouscore;
+package com.quantumgarbage.egregiouscore.item;
 
 import aztech.modern_industrialization.MIComponents;
+import com.quantumgarbage.egregiouscore.Config;
 import com.quantumgarbage.gtmogs.integration.map.cache.server.ServerCache;
 import dev.technici4n.grandpower.api.ISimpleEnergyItem;
 import java.text.NumberFormat;
@@ -23,11 +24,11 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
-public class ProspectorItem extends Item implements ISimpleEnergyItem {
+public class Prospector extends Item implements ISimpleEnergyItem {
   private long energyCapacity;
 
-  public ProspectorItem(Properties properties, long energyCapacity) {
-    super(properties.rarity(Rarity.RARE).stacksTo(1).component(MIComponents.ENERGY.get(), 0L));
+  public Prospector(Properties properties, long energyCapacity) {
+    super(properties.rarity(Rarity.UNCOMMON).stacksTo(1).component(MIComponents.ENERGY.get(), 0L));
     this.energyCapacity = energyCapacity;
   }
 

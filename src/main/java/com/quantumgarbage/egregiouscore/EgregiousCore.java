@@ -2,6 +2,7 @@ package com.quantumgarbage.egregiouscore;
 
 import com.mojang.logging.LogUtils;
 import com.quantumgarbage.egregiouscore.datagen.DatagenDelegator;
+import com.quantumgarbage.egregiouscore.item.Prospector;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -19,11 +20,15 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.swedz.tesseract.neoforge.capabilities.CapabilitiesListeners;
+import net.swedz.tesseract.neoforge.registry.holder.BlockHolder;
+import net.swedz.tesseract.neoforge.registry.holder.ItemHolder;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
@@ -40,8 +45,8 @@ public class EgregiousCore {
   // Create a Deferred Register to hold Items which will all be registered under the
   // "egregiouscore" namespace
   public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(ID);
-  public static final DeferredItem<ProspectorItem> PROSPECTOR_ITEM =
-      ITEMS.register("prospector", () -> new ProspectorItem(new Item.Properties(), 0L));
+  public static final DeferredItem<Prospector> PROSPECTOR_ITEM =
+      ITEMS.register("prospector", () -> new Prospector(new Item.Properties(), 0L));
   // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the
   // "egregiouscore" namespace
   public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
@@ -86,10 +91,22 @@ public class EgregiousCore {
     // onServerStarting() below.
     NeoForge.EVENT_BUS.register(this);
 
+    modEventBus.addListener(
+        RegisterCapabilitiesEvent.class, (event) -> CapabilitiesListeners.triggerAll(ID, event));
+
     // Register our mod's ModConfigSpec so that FML can create and load the config file for us
     modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
     modEventBus.register(new DatagenDelegator());
+
+    modEventBus.addListener(
+        FMLCommonSetupEvent.class,
+        (event) ->
+            event.enqueueWork(
+                () -> {
+                  EgregiousItems.values().forEach(ItemHolder::triggerRegistrationListener);
+                  EgregiousBlocks.values().forEach(BlockHolder::triggerRegistrationListener);
+                }));
   }
 
   public static ResourceLocation id(String name) {
