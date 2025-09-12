@@ -6,7 +6,6 @@ import java.util.function.Function;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.swedz.extended_industrialization.EISortOrder;
 import net.swedz.tesseract.neoforge.registry.SortOrder;
 import net.swedz.tesseract.neoforge.registry.common.CommonModelBuilders;
 import net.swedz.tesseract.neoforge.registry.common.MICommonCapabitilies;
@@ -18,7 +17,7 @@ public class EgregiousItems {
               "prospector",
               "Ore Prospector",
               (p) -> new ProspectorItem(p, 1_000_000L),
-              EISortOrder.GEAR)
+              SortOrder.UNSORTED)
           .withCapabilities(MICommonCapabitilies::simpleEnergyItem)
           .withModelBuilder(CommonModelBuilders::handheld)
           .register();

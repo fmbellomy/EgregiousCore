@@ -8,7 +8,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.swedz.extended_industrialization.EISortOrder;
 import net.swedz.tesseract.neoforge.compat.mi.hook.MIHookEntrypoint;
 import net.swedz.tesseract.neoforge.compat.mi.hook.MIHookRegistry;
 import net.swedz.tesseract.neoforge.registry.SortOrder;
@@ -60,6 +59,6 @@ public class EgregiousMIHookRegistry implements MIHookRegistry {
 
   @Override
   public SortOrder sortOrderMachines() {
-    return EISortOrder.MACHINES;
+    return SortOrder.UNSORTED;
   }
 }

@@ -75,11 +75,7 @@ public class EgregiousCore {
     EgregiousRecipeTypes.init(modEventBus);
     EgregiousItems.init(modEventBus);
     EgregiousBlocks.init(modEventBus);
-    BLOCKS.register(modEventBus);
-    // Register the Deferred Register to the mod event bus so items get registered
-    ITEMS.register(modEventBus);
-    // Register the Deferred Register to the mod event bus so tabs get registered
-    CREATIVE_MODE_TABS.register(modEventBus);
+    EgregiousCreativeTab.init(modEventBus);
 
     // modEventBus.addListener(this::registerCapabilities);
     modEventBus.addListener(this::onConfigLoaded);
@@ -101,7 +97,7 @@ public class EgregiousCore {
   }
 
   public void onConfigLoaded(ModConfigEvent.Loading event) {
-    PROSPECTOR_ITEM.get().setEnergyCapacity(Config.PROSPECTOR_ENERGY_CAPACITY.get());
+    EgregiousItems.PROSPECTOR.get().setEnergyCapacity(Config.PROSPECTOR_ENERGY_CAPACITY.get());
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {}
