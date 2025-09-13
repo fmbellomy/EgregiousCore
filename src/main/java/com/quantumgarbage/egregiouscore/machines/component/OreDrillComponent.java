@@ -38,7 +38,7 @@ public class OreDrillComponent implements IComponent.ServerOnly {
   protected final MachineProcessCondition.Context conditionContext;
 
   private final CrafterComponent.Inventory inventory;
-  private final int maxRadius = 25;
+  private final int maxRadius = 32;
   private final LinkedList<BlockPos> blocksToMine = new LinkedList<>();
   protected int x = Integer.MAX_VALUE;
   protected int y = Integer.MAX_VALUE;
