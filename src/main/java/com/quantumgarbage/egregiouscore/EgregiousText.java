@@ -3,8 +3,9 @@ package com.quantumgarbage.egregiouscore;
 import net.swedz.tesseract.neoforge.compat.mi.tooltip.MICompatibleTranslatableTextEnum;
 
 public enum EgregiousText implements MICompatibleTranslatableTextEnum {
-// that's right, this is an enum with zero members!
-;
+  PlantMissingDrills("No drills in input hatch."),
+  Empty("");
+
   private final String englishText;
 
   EgregiousText(String englishText) {

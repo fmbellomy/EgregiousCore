@@ -17,9 +17,11 @@ import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import com.quantumgarbage.egregiouscore.EgregiousCore;
 import com.quantumgarbage.egregiouscore.EgregiousDatamaps;
+import com.quantumgarbage.egregiouscore.EgregiousText;
 import com.quantumgarbage.egregiouscore.datamap.DrillingPlantInput;
 import com.quantumgarbage.egregiouscore.machines.component.OreDrillComponent;
 import java.util.Optional;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.swedz.tesseract.neoforge.compat.mi.guicomponent.modularmultiblock.ModularMultiblockGui;
 import net.swedz.tesseract.neoforge.compat.mi.guicomponent.modularmultiblock.ModularMultiblockGuiLine;
@@ -67,14 +69,43 @@ public class OreDrillingPlantBlockEntity extends BasicMultiblockMachineBlockEnti
             0,
             ModularMultiblockGui.HEIGHT,
             content -> {
-              content.add(
-                  (this.isShapeValid()
-                          ? MIText.MultiblockShapeValid
-                          : MIText.MultiblockShapeInvalid)
-                      .text(),
-                  this.isShapeValid()
-                      ? ModularMultiblockGuiLine.WHITE
-                      : ModularMultiblockGuiLine.RED);
+              content
+                  .add(
+                      (this.isShapeValid()
+                              ? MIText.MultiblockShapeValid
+                              : MIText.MultiblockShapeInvalid)
+                          .text(),
+                      this.isShapeValid()
+                          ? ModularMultiblockGuiLine.WHITE
+                          : ModularMultiblockGuiLine.RED)
+                  .add(
+                      this.oreDrillComponent.hasActiveRecipe()
+                          ? Component.literal(
+                              "%.2f / 100".formatted(oreDrillComponent.getProgress()))
+                          : Component.literal(""))
+                  .add(
+                      this.oreDrillComponent.hasActiveRecipe()
+                          ? Component.literal("Mining ")
+                              .append(
+                                  getLevel()
+                                      .getBlockState(oreDrillComponent.getCurrentMiningPos())
+                                      .getBlock()
+                                      .getName())
+                          : Component.literal(""))
+                  .add(
+                      this.inventory.getItemInputs().getFirst().isEmpty()
+                          ? EgregiousText.PlantMissingDrills
+                          : EgregiousText.Empty,
+                      this.oreDrillComponent.hasActiveRecipe()
+                          ? ModularMultiblockGuiLine.RED
+                          : ModularMultiblockGuiLine.WHITE)
+                  .add(
+                      this.oreDrillComponent.isDone()
+                          ? Component.literal("Drill finished mining.")
+                          : Component.literal(""),
+                      this.oreDrillComponent.hasActiveRecipe()
+                          ? ModularMultiblockGuiLine.RED
+                          : ModularMultiblockGuiLine.WHITE);
             }));
   }
 

@@ -53,9 +53,6 @@ public class OreDrillComponent implements IComponent.ServerOnly {
   protected long usedEnergy;
   protected long drillEnergyCost;
   protected long drillMaxEu;
-  protected int progressCounter;
-  protected int lastInvHash = 0;
-  protected int lastForcedTick = 0;
   protected ResourceLocation delayedActiveRecipe;
   protected int drillLength = 0;
   protected boolean isDone;
@@ -309,7 +306,6 @@ public class OreDrillComponent implements IComponent.ServerOnly {
       }
       incrementPipeLength();
     }
-    System.out.println("CHECKING BLOCKS TO MINE AT " + drillY);
     checkBlocksToMine();
     if (blocksToMine.isEmpty()) {
       return List.of();
@@ -321,7 +317,6 @@ public class OreDrillComponent implements IComponent.ServerOnly {
     BlockState ore = world.getBlockState(blocksToMine.getFirst());
     world.setBlock(blocksToMine.getFirst(), findMiningReplacementBlock(), 3);
     blocksToMine.removeFirst();
-    System.out.println("MINING " + ore);
 
     LootParams.Builder builder =
         new LootParams.Builder(conditionContext.getLevel())
@@ -511,6 +506,10 @@ public class OreDrillComponent implements IComponent.ServerOnly {
     return blocks;
   }
 
+  public BlockPos getCurrentMiningPos() {
+    return new BlockPos(x, y, z);
+  }
+
   /**
    * @return the position to start mining from
    */
@@ -520,5 +519,9 @@ public class OreDrillComponent implements IComponent.ServerOnly {
         .getBlockEntity()
         .getBlockPos()
         .relative(axis, -1); // mine under the chain and not under the controller
+  }
+
+  public boolean isDone() {
+    return isDone;
   }
 }
