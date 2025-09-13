@@ -94,7 +94,9 @@ public class OreDrillingPlantBlockEntity extends BasicMultiblockMachineBlockEnti
   public final void tick() {
     if (!level.isClientSide) {
       link();
-
+      if (!isShapeValid()) {
+        return;
+      }
       boolean newActive = false;
 
       for (ConfigurableItemStack stack : inventory.getItemInputs()) {

@@ -408,18 +408,13 @@ public class OreDrillComponent implements IComponent.ServerOnly {
     startX = pos.getX() - currentRadius;
     startZ = pos.getZ() - currentRadius;
     startY = pos.getY();
-    if (dir == Direction.UP) {
-      drillY = pos.getY() + 1;
-    } else {
-      drillY = pos.getY() - 1;
-    }
+
+    drillY = pos.getY() - 3; // don't mine the multiblock itself
+
     mineX = pos.getX() - currentRadius;
     mineZ = pos.getZ() - currentRadius;
-    if (dir == Direction.UP) {
-      mineY = pos.getY() + 1;
-    } else {
-      mineY = pos.getY() - 1;
-    }
+
+    mineY = pos.getY() - 3; // don't mine the multiblock itself;
   }
 
   /**
@@ -520,6 +515,10 @@ public class OreDrillComponent implements IComponent.ServerOnly {
    * @return the position to start mining from
    */
   public BlockPos getMiningPos() {
-    return conditionContext.getBlockEntity().getBlockPos();
+    var axis = conditionContext.getBlockEntity().orientation.facingDirection;
+    return conditionContext
+        .getBlockEntity()
+        .getBlockPos()
+        .relative(axis, -1); // mine under the chain and not under the controller
   }
 }
