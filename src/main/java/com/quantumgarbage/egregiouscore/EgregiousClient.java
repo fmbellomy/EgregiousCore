@@ -9,11 +9,16 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.swedz.tesseract.neoforge.registry.holder.ItemHolder;
 
+@Mod(dist = Dist.CLIENT, value = EgregiousCore.ID)
+@EventBusSubscriber(value = Dist.CLIENT, modid = EgregiousCore.ID)
 public final class EgregiousClient {
   @SubscribeEvent
   private static void registerItemProperties(FMLClientSetupEvent event) {
