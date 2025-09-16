@@ -1,0 +1,7 @@
+{
+    "block.egregiouscore.ore_drilling_plant": "Ore Drilling Plant",
+    "item.egregiouscore.prospector": "Ore Prospector",
+    "itemGroup.egregiouscore.egregiouscore": "Egregious Core",
+    "text.egregiouscore.empty": "",
+    "text.egregiouscore.plantmissingdrills": "No drills in input hatch."
+}

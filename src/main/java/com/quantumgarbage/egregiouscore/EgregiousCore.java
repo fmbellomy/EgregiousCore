@@ -1,8 +1,8 @@
 package com.quantumgarbage.egregiouscore;
 
-import aztech.modern_industrialization.api.energy.EnergyApi;
 import com.mojang.logging.LogUtils;
-import dev.technici4n.grandpower.api.ISimpleEnergyItem;
+import com.quantumgarbage.egregiouscore.datagen.DatagenDelegator;
+import com.quantumgarbage.egregiouscore.item.Prospector;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -26,6 +26,10 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
+import net.swedz.tesseract.neoforge.capabilities.CapabilitiesListeners;
+import net.swedz.tesseract.neoforge.registry.holder.BlockHolder;
+import net.swedz.tesseract.neoforge.registry.holder.ItemHolder;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
@@ -34,14 +38,16 @@ public class EgregiousCore {
 
   // Define mod id in a common place for everything to reference
   public static final String ID = "egregiouscore";
+  public static final String NAME = "Egregious Core";
+
   // Create a Deferred Register to hold Blocks which will all be registered under the
   // "egregiouscore" namespace
   public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(ID);
   // Create a Deferred Register to hold Items which will all be registered under the
   // "egregiouscore" namespace
   public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(ID);
-  public static final DeferredItem<ProspectorItem> PROSPECTOR_ITEM =
-      ITEMS.register("prospector", () -> new ProspectorItem(new Item.Properties(), 0L));
+  public static final DeferredItem<Prospector> PROSPECTOR_ITEM =
+      ITEMS.register("prospector", () -> new Prospector(new Item.Properties(), 0L));
   // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the
   // "egregiouscore" namespace
   public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
@@ -72,13 +78,12 @@ public class EgregiousCore {
     modEventBus.addListener(this::commonSetup);
 
     // Register the Deferred Register to the mod event bus so blocks get registered
-    BLOCKS.register(modEventBus);
-    // Register the Deferred Register to the mod event bus so items get registered
-    ITEMS.register(modEventBus);
-    // Register the Deferred Register to the mod event bus so tabs get registered
-    CREATIVE_MODE_TABS.register(modEventBus);
+    EgregiousRecipeTypes.init(modEventBus);
+    EgregiousItems.init(modEventBus);
+    EgregiousBlocks.init(modEventBus);
+    EgregiousCreativeTab.init(modEventBus);
 
-    modEventBus.addListener(this::registerCapabilities);
+    // modEventBus.addListener(this::registerCapabilities);
     modEventBus.addListener(this::onConfigLoaded);
     // Register ourselves for server and other game events we are interested in.
     // Note that this is necessary if and only if we want *this* class (Egregious_core) to respond
@@ -87,8 +92,23 @@ public class EgregiousCore {
     // onServerStarting() below.
     NeoForge.EVENT_BUS.register(this);
 
+    modEventBus.addListener(
+        RegisterCapabilitiesEvent.class, (event) -> CapabilitiesListeners.triggerAll(ID, event));
+
     // Register our mod's ModConfigSpec so that FML can create and load the config file for us
     modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
+    modEventBus.register(new DatagenDelegator());
+
+    modEventBus.addListener(
+        FMLCommonSetupEvent.class,
+        (event) ->
+            event.enqueueWork(
+                () -> {
+                  EgregiousItems.values().forEach(ItemHolder::triggerRegistrationListener);
+                  EgregiousBlocks.values().forEach(BlockHolder::triggerRegistrationListener);
+                }));
+    modEventBus.addListener(RegisterDataMapTypesEvent.class, EgregiousDatamaps::init);
   }
 
   public static ResourceLocation id(String name) {
@@ -96,21 +116,7 @@ public class EgregiousCore {
   }
 
   public void onConfigLoaded(ModConfigEvent.Loading event) {
-    PROSPECTOR_ITEM.get().setEnergyCapacity(Config.PROSPECTOR_ENERGY_CAPACITY.get());
-  }
-
-  private void registerCapabilities(RegisterCapabilitiesEvent event) {
-    ProspectorItem item = PROSPECTOR_ITEM.get();
-    event.registerItem(
-        EnergyApi.ITEM,
-        (stack, ctx) ->
-            ISimpleEnergyItem.createStorage(
-                stack,
-                item.getEnergyComponent(),
-                item.getEnergyCapacity(stack),
-                item.getEnergyMaxInput(stack),
-                item.getEnergyMaxOutput(stack)),
-        item);
+    EgregiousItems.PROSPECTOR.get().setEnergyCapacity(Config.PROSPECTOR_ENERGY_CAPACITY.get());
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {}
