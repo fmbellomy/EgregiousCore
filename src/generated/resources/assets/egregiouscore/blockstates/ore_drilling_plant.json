@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "": {
+            "model": "egregiouscore:block/ore_drilling_plant"
+        }
+    }
+}

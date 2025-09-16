@@ -9,12 +9,15 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import aztech.modern_industrialization.util.Simulation;
 import com.quantumgarbage.egregiouscore.EgregiousDatamaps;
 import com.quantumgarbage.egregiouscore.datamap.DrillingPlantInput;
+import com.quantumgarbage.egregiouscore.machines.blockentity.multiblock.OreDrillingPlantBlockEntity;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -201,15 +204,12 @@ public class OreDrillComponent implements IComponent.ServerOnly {
   }
 
   public long getCurrentRecipeEu() {
-    return drillMaxEu;
+    return activeRecipe.euCost();
   }
 
   public boolean trySetActiveRecipe(DrillingPlantInput recipe) {
-    if (activeRecipe == null) {
-      activeRecipe = recipe;
-      return true;
-    }
-    return false;
+    activeRecipe = recipe;
+    return true;
   }
 
   public List<ItemStack> getOutputsFor(Item rawOre, Random rand) {
@@ -233,42 +233,44 @@ public class OreDrillComponent implements IComponent.ServerOnly {
     return List.of();
   }
 
-  public boolean tickRecipe() {
+  public void setUsedEnergy(long energy) {
+    this.usedEnergy = energy;
+  }
+
+  public boolean tickRecipe(
+      OreDrillingPlantBlockEntity be, ConfigurableItemStack stack, DrillingPlantInput in) {
     if (this.conditionContext.getBlockEntity().getLevel().isClientSide()) {
       throw new IllegalStateException("May not call client side.");
     }
-
+    this.activeRecipe = in;
+    long eu = in.euCost();
+    long consumedSim = be.consumeEu(eu, Simulation.SIMULATE);
     boolean active = false;
-    long eu = 0;
 
-    boolean finished = false;
-    if (activeRecipe != null) {
-      for (ConfigurableItemStack stack : inventory.getItemInputs()) {
-        if (consumeDrill(stack, true)) {
-          eu = this.activeRecipe.euCost();
-          usedEnergy += eu;
-
-          if (usedEnergy == activeRecipe.euCost() * 20) {
-            List<ItemStack> output = findAndMineOre();
-            for (ItemStack out : output) {
-              this.putOutputs(false, false, out);
-            }
-            this.clearLocks();
-            if (drillRNG.nextFloat(0, 100) < activeRecipe.breakProbability()) {
-              consumeDrill(stack, false);
-            }
-
-            usedEnergy = 0;
-            finished = true;
-          }
-          break;
-        }
-      }
+    if (activeRecipe == null) {
+      usedEnergy = Math.max(usedEnergy - eu, 0);
+      return false;
     }
-
-    if (finished) {
-      // If the recipe is done, allow starting another one
-      this.activeRecipe = null;
+    if (!consumeDrill(stack, true)) {
+      usedEnergy = Math.max(usedEnergy - eu, 0);
+      return false;
+    }
+    if (consumedSim < eu) {
+      usedEnergy = Math.max(usedEnergy - eu, 0);
+      return false;
+    }
+    be.consumeEu(eu, Simulation.ACT);
+    usedEnergy += eu;
+    if (usedEnergy >= in.euCost() * 20) {
+      List<ItemStack> output = findAndMineOre();
+      for (ItemStack out : output) {
+        this.putOutputs(false, false, out);
+      }
+      this.clearLocks();
+      if (drillRNG.nextFloat(0, 100) < activeRecipe.breakProbability()) {
+        consumeDrill(stack, false);
+      }
+      usedEnergy = 0;
     }
 
     return active;
@@ -506,8 +508,12 @@ public class OreDrillComponent implements IComponent.ServerOnly {
     return blocks;
   }
 
-  public BlockPos getCurrentMiningPos() {
-    return new BlockPos(x, y, z);
+  public BlockPos getNextOreToMine() {
+    try {
+      return blocksToMine.getFirst();
+    } catch (NoSuchElementException e) {
+      return null;
+    }
   }
 
   /**

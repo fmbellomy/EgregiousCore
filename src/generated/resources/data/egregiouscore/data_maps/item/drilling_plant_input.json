@@ -1,0 +1,29 @@
+{
+    "values": {
+        "modern_industrialization:aluminum_drill": {
+            "break_probability": 5.0,
+            "eu_cost": 64,
+            "multiplier": 2.25
+        },
+        "modern_industrialization:bronze_drill": {
+            "break_probability": 5.0,
+            "eu_cost": 4,
+            "multiplier": 1.25
+        },
+        "modern_industrialization:stainless_steel_drill": {
+            "break_probability": 3.0,
+            "eu_cost": 256,
+            "multiplier": 3.0
+        },
+        "modern_industrialization:steel_drill": {
+            "break_probability": 5.0,
+            "eu_cost": 16,
+            "multiplier": 1.75
+        },
+        "modern_industrialization:titanium_drill": {
+            "break_probability": 2.0,
+            "eu_cost": 512,
+            "multiplier": 5.0
+        }
+    }
+}
