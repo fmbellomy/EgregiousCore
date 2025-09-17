@@ -15,6 +15,10 @@ public class DataMapDatagenProvider extends DataMapProvider {
   private static final ResourceLocation STAINLESS_STEEL_DRILL = MI.id("stainless_steel_drill");
   private static final ResourceLocation TITANIUM_DRILL = MI.id("titanium_drill");
 
+  // this last one only exists in Egregious Industrialization by virtue of MI's KJS runtime data
+  // generation.
+  private static final ResourceLocation IRIDIUM_DRILL = MI.id("iridium_drill");
+
   public DataMapDatagenProvider(GatherDataEvent event) {
     super(event.getGenerator().getPackOutput(), event.getLookupProvider());
   }
@@ -26,6 +30,7 @@ public class DataMapDatagenProvider extends DataMapProvider {
     this.addDrillingPlantInput(ALUMINUM_DRILL, 64, 2.25f, 5f);
     this.addDrillingPlantInput(STAINLESS_STEEL_DRILL, 256L, 3f, 3f);
     this.addDrillingPlantInput(TITANIUM_DRILL, 512L, 5f, 2f);
+    this.addDrillingPlantInput(IRIDIUM_DRILL, 2048L, 7.5f, 0.5f);
   }
 
   @Override
