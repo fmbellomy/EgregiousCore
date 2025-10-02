@@ -22,6 +22,8 @@ public class DataMapDatagenProvider extends DataMapProvider {
 
   // all of these only make sense in Egregious Industrialization since gas turbines aren't real.
   private static final ResourceLocation BENZENE = MI.id("benzene");
+  private static final ResourceLocation PHENOL = MI.id("phenol");
+  private static final ResourceLocation TOLUENE = MI.id("phenol");
   private static final ResourceLocation METHANE = MI.id("methane");
   private static final ResourceLocation NAPHTHA = MI.id("naphtha");
 
@@ -41,6 +43,8 @@ public class DataMapDatagenProvider extends DataMapProvider {
     this.addGasTurbineFuel(BENZENE, 800);
     this.addGasTurbineFuel(METHANE, 500);
     this.addGasTurbineFuel(NAPHTHA, 120);
+    this.addGasTurbineFuel(PHENOL, 360);
+    this.addGasTurbineFuel(TOLUENE, 400);
   }
 
   @Override
