@@ -28,6 +28,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 import net.swedz.tesseract.neoforge.capabilities.CapabilitiesListeners;
+import net.swedz.tesseract.neoforge.compat.mi.TesseractMI;
 import net.swedz.tesseract.neoforge.registry.holder.BlockHolder;
 import net.swedz.tesseract.neoforge.registry.holder.ItemHolder;
 import org.slf4j.Logger;
@@ -76,7 +77,7 @@ public class EgregiousCore {
   public EgregiousCore(IEventBus modEventBus, ModContainer modContainer) {
     // Register the commonSetup method for modloading
     modEventBus.addListener(this::commonSetup);
-
+    TesseractMI.init(ID);
     // Register the Deferred Register to the mod event bus so blocks get registered
     EgregiousRecipeTypes.init(modEventBus);
     EgregiousItems.init(modEventBus);

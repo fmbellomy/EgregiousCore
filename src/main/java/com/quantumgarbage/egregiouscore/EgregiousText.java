@@ -4,6 +4,7 @@ import net.swedz.tesseract.neoforge.compat.mi.tooltip.MICompatibleTranslatableTe
 
 public enum EgregiousText implements MICompatibleTranslatableTextEnum {
   PlantMissingDrills("No drills in input hatch."),
+  GasFuels("Gas Turbine Fuels"),
   Empty("");
 
   private final String englishText;

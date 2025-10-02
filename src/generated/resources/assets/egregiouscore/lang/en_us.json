@@ -3,5 +3,6 @@
     "item.egregiouscore.prospector": "Ore Prospector",
     "itemGroup.egregiouscore.egregiouscore": "Egregious Core",
     "text.egregiouscore.empty": "",
+    "text.egregiouscore.gasfuels": "Gas Turbine Fuels",
     "text.egregiouscore.plantmissingdrills": "No drills in input hatch."
 }

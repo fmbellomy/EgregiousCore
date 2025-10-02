@@ -1,0 +1,13 @@
+{
+    "values": {
+        "modern_industrialization:benzene": {
+            "eut": 800
+        },
+        "modern_industrialization:methane": {
+            "eut": 500
+        },
+        "modern_industrialization:naphtha": {
+            "eut": 120
+        }
+    }
+}

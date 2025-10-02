@@ -3,11 +3,13 @@ package com.quantumgarbage.egregiouscore;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.quantumgarbage.egregiouscore.datamap.DrillingPlantInput;
+import com.quantumgarbage.egregiouscore.datamap.GasTurbineFuel;
 import java.util.Set;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 
@@ -15,6 +17,8 @@ public class EgregiousDatamaps {
   public static final Set<DataMapType<?, ?>> DATA_MAPS = Sets.newHashSet();
   public static final DataMapType<Item, DrillingPlantInput> DRILLING_PLANT_INPUT =
       create("drilling_plant_input", Registries.ITEM, DrillingPlantInput.CODEC, true);
+  public static final DataMapType<Fluid, GasTurbineFuel> GAS_TURBINE_FUEL =
+      create("gas_turbine_fuel", Registries.FLUID, GasTurbineFuel.CODEC, true);
 
   private static <R, T> DataMapType<R, T> create(
       String name, ResourceKey<Registry<R>> registry, Codec<T> codec, boolean sync) {
