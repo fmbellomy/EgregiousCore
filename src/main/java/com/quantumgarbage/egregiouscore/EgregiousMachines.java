@@ -8,7 +8,7 @@ public class EgregiousMachines {
   public static void multiblocks(MultiblockMachinesMIHookContext hook) {
     hook.builder("ore_drilling_plant", "Ore Drilling Plant", OreDrillingPlantBlockEntity::new)
         .builtinModel(
-            MachineCasings.STEEL,
+            MachineCasings.BRONZE,
             "ore_drilling_plant",
             (model) -> model.front(true).top(true).side(false).active(true))
         .registrator((__) -> OreDrillingPlantBlockEntity.registerReiShapes())

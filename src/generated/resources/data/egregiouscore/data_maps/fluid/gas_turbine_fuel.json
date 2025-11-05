@@ -8,6 +8,9 @@
         },
         "modern_industrialization:naphtha": {
             "eut": 120
+        },
+        "modern_industrialization:phenol": {
+            "eut": 400
         }
     }
 }

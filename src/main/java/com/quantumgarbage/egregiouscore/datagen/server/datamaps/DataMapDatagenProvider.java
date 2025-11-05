@@ -33,12 +33,12 @@ public class DataMapDatagenProvider extends DataMapProvider {
 
   @Override
   protected void gather() {
-    this.addDrillingPlantInput(BRONZE_DRILL, 4L, 1.25f, 5f);
-    this.addDrillingPlantInput(STEEL_DRILL, 16L, 1.75f, 5f);
-    this.addDrillingPlantInput(ALUMINUM_DRILL, 64, 2.25f, 5f);
-    this.addDrillingPlantInput(STAINLESS_STEEL_DRILL, 256L, 3f, 3f);
-    this.addDrillingPlantInput(TITANIUM_DRILL, 512L, 5f, 2f);
-    this.addDrillingPlantInput(IRIDIUM_DRILL, 2048L, 7.5f, 0.5f);
+    this.addDrillingPlantInput(BRONZE_DRILL, 2L, 1.25f, 5f);
+    this.addDrillingPlantInput(STEEL_DRILL, 8L, 1.75f, 5f);
+    this.addDrillingPlantInput(ALUMINUM_DRILL, 32, 2.25f, 5f);
+    this.addDrillingPlantInput(STAINLESS_STEEL_DRILL, 64L, 3f, 3f);
+    this.addDrillingPlantInput(TITANIUM_DRILL, 256L, 5f, 2f);
+    this.addDrillingPlantInput(IRIDIUM_DRILL, 1024L, 7.5f, 0.5f);
 
     this.addGasTurbineFuel(BENZENE, 800);
     this.addGasTurbineFuel(METHANE, 500);

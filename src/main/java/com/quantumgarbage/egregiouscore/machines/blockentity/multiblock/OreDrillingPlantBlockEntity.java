@@ -2,17 +2,15 @@ package com.quantumgarbage.egregiouscore.machines.blockentity.multiblock;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.api.machine.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
-import aztech.modern_industrialization.machines.components.EnergyComponent;
 import aztech.modern_industrialization.machines.components.MultiblockInventoryComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machines.helper.SteamHelper;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
-import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
@@ -24,8 +22,6 @@ import com.quantumgarbage.egregiouscore.EgregiousDatamaps;
 import com.quantumgarbage.egregiouscore.EgregiousText;
 import com.quantumgarbage.egregiouscore.datamap.DrillingPlantInput;
 import com.quantumgarbage.egregiouscore.machines.component.OreDrillComponent;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -33,36 +29,33 @@ import net.swedz.tesseract.neoforge.compat.mi.guicomponent.modularmultiblock.Mod
 import net.swedz.tesseract.neoforge.compat.mi.guicomponent.modularmultiblock.ModularMultiblockGuiLine;
 import net.swedz.tesseract.neoforge.compat.mi.machine.blockentity.multiblock.BasicMultiblockMachineBlockEntity;
 
-public class OreDrillingPlantBlockEntity extends BasicMultiblockMachineBlockEntity
-    implements EnergyListComponentHolder {
+public class OreDrillingPlantBlockEntity extends BasicMultiblockMachineBlockEntity {
   private static final String[][] layers = {
-    {"M M", "HHH", " H "}, //
-    {" C ", "HCH", "HPH"}, //
-    {"M M", "HHH", " # "}
+    {"P P", "HHH", " P "}, //
+    {" C ", "HCH", " P "},
+    {"P P", "H#H", " P "}
   };
   private static final HatchFlags hatches =
       new HatchFlags.Builder()
-          .with(HatchTypes.ENERGY_INPUT, HatchTypes.ITEM_INPUT, HatchTypes.ITEM_OUTPUT)
+          .with(HatchTypes.FLUID_INPUT, HatchTypes.ITEM_INPUT, HatchTypes.ITEM_OUTPUT)
           .build();
 
   private static final ShapeTemplate[] SHAPES =
       new ShapeTemplate[] {
-        new ShapeTemplate.LayeredBuilder(MachineCasings.STEEL, layers)
-            .key('M', SimpleMember.forBlockId(MI.id("steel_machine_casing")), HatchFlags.NO_HATCH)
+        new ShapeTemplate.LayeredBuilder(MachineCasings.BRONZE, layers)
             .key(
                 'C',
                 SimpleMember.forBlockId(ResourceLocation.parse("minecraft:chain")),
                 HatchFlags.NO_HATCH)
-            .key('H', SimpleMember.forBlockId(MI.id("steel_machine_casing")), hatches)
+            .key('H', SimpleMember.forBlockId(MI.id("bronze_machine_casing")), hatches)
             .key(
                 'P',
-                SimpleMember.forBlockId(MI.id("steel_machine_casing_pipe")),
+                SimpleMember.forBlockId(MI.id("bronze_machine_casing_pipe")),
                 HatchFlags.NO_HATCH)
             .build()
       };
 
   protected final MultiblockInventoryComponent inventory;
-  protected final List<EnergyComponent> energyInputs = new ArrayList<>();
   private final OreDrillComponent oreDrillComponent;
 
   public OreDrillingPlantBlockEntity(BEP bep) {
@@ -128,28 +121,14 @@ public class OreDrillingPlantBlockEntity extends BasicMultiblockMachineBlockEnti
   }
 
   public final long consumeEu(long max, Simulation simulation) {
-    long total = 0;
-
-    for (EnergyComponent energyComponent : energyInputs) {
-      total += energyComponent.consumeEu(max - total, simulation);
-    }
-
-    return total;
-  }
-
-  public List<EnergyComponent> getEnergyComponents() {
-    return energyInputs;
+    return SteamHelper.consumeSteamEu(inventory.getFluidInputs(), max, simulation);
   }
 
   @Override
   protected void onRematch(ShapeMatcher shapeMatcher) {
     super.onRematch(shapeMatcher);
     if (shapeMatcher.isMatchSuccessful()) {
-      energyInputs.clear();
-      for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
-        hatch.appendEnergyInputs(energyInputs);
-        inventory.rebuild(shapeMatcher);
-      }
+      inventory.rebuild(shapeMatcher);
     }
   }
 
@@ -165,8 +144,7 @@ public class OreDrillingPlantBlockEntity extends BasicMultiblockMachineBlockEnti
       for (ConfigurableItemStack stack : inventory.getItemInputs()) {
         Optional<DrillingPlantInput> drillInput = getDrillInput(stack);
         // if the present item is actually a drill
-        boolean isValidDrill =
-            drillInput.map(recipe -> oreDrillComponent.trySetActiveRecipe(recipe)).isPresent();
+        boolean isValidDrill = drillInput.map(oreDrillComponent::trySetActiveRecipe).isPresent();
         if (isValidDrill) {
           oreDrillComponent.tickRecipe(this, stack, drillInput.get());
           break;
@@ -213,7 +191,7 @@ public class OreDrillingPlantBlockEntity extends BasicMultiblockMachineBlockEnti
 
   @Override
   protected MachineModelClientData getMachineModelData() {
-    return new MachineModelClientData(MachineCasings.STEEL, orientation.facingDirection)
+    return new MachineModelClientData(MachineCasings.BRONZE, orientation.facingDirection)
         .active(isActive.isActive);
   }
 }

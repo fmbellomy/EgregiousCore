@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'idea'
-    id 'net.neoforged.moddev' version '2.0.107'
+    id 'net.neoforged.moddev' version '2.0.116'
     id 'net.neoforged.gradleutils.immaculate' version '5.0.4'
     id 'dev.lukebemish.immaculate' version '0.1.13'
 }
@@ -26,11 +26,10 @@ dependencies {
 
     implementation "com.quantumgarbage:gtmogs-1.21.1:1.0.6-SNAPSHOT"
     implementation "com.tterrag.registrate:Registrate:MC1.21-1.3.0+67"
-    implementation "com.lowdragmc.ldlib:ldlib-neoforge-1.21.1:1.0.35.a"
 
-    implementation "net.swedz:tesseract-api-neoforge:1.9.0-1.21.1"
-    implementation "net.swedz:extended-industrialization:1.15.9-1.21.1"
-    implementation "aztech:Modern-Industrialization:2.3.11"
+    implementation "net.swedz:tesseract-api-neoforge:1.10.1-1.21.1"
+    implementation "net.swedz:extended-industrialization:1.15.18-1.21.1"
+    implementation "aztech:Modern-Industrialization:2.3.16"
 
     implementation "dev.technici4n:GrandPower:3.0.2"
 
